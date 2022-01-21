@@ -1,0 +1,65 @@
+<html>
+	<head>
+		<title>wrum</title>
+		<style>
+			#canvasScreen {
+				clear: both;
+			}
+			
+			.block {
+				float: left;
+				border: solid black 1px;
+				margin: 2px;
+				width: 230px;
+			}
+			
+			.clr {
+				clear: both;
+			}
+		
+		</style>
+	</head>
+	<body>
+		<div id="canvasScreen">
+		<canvas id="main" width="400" height="400"></canvas>
+		</div>
+		
+		<div class="block">
+			<b>Env</b>
+			<div id="cords">xd</div>
+			<div id="draw_time">xd</div>
+			<div id="key">xd</div>
+		</div>
+		
+		<div class="block">
+			<b>Car</b>
+			
+			<div id="wheelsUi">wheelsUi</div>
+			<div id="carAngleUi">carAngleUi</div>
+			<div id="speedUi">speedUi</div>
+			<div id="carXpos">carXpos</div>
+			<div id="carYpos">carYpos</div>
+			<div id="carXposAbs">carXposAbs</div>
+			<div id="carYposAbs">carYposAbs</div>
+		</div>
+		
+		<div class="block">
+			<b>Sensor's</b>
+			<div id="sensLeftUi">sensLeftUi</div>
+			<div id="sensCenterUi">sensCenterUi</div>
+			<div id="sensRightUi">sensRightUi</div>
+		</div>
+		
+		<div class="clr">
+		<button onclick="draw(false, 0, 0, 0);" type="button">draw()</button>
+		<button onclick="clear_array2D();" type="button">clear_array2D()</button>
+		<button onclick="start_ai();" type="button">start_ai()</button>
+		<button onclick="stop_ai();" type="button">stop_ai()</button>
+		<button onclick="draw_car_sensor();" type="button">draw_car_sensor()</button>
+		</div>
+		
+		<script src="ai.js"></script>
+		<script src="gfx.js"></script>
+		
+	</body>
+</html>
