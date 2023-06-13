@@ -31,11 +31,14 @@ customAngle = 0;
 var array2D = [];
 init_array2D();
 
+// "#007070" grass 0
+// "#dbdbdb" path 1
+
 function init_array2D(){
 	for(var i = 0 ; i < HEIGHT; i++){
 		array2D[i] = [];
 		for(var j = 0 ; j < WIDTH; j++){
-			array2D[i][j] = "#007070";
+			array2D[i][j] = 0;
 		}
 	}
 
@@ -45,12 +48,11 @@ function clear_array2D(){
 	for(var i = 0 ; i < HEIGHT; i++){
 		//array2D[i] = [];
 		for(var j = 0 ; j < WIDTH; j++){
-			array2D[i][j] = "#007070";
+			array2D[i][j] = 0;
 		}
 	}
 
 }
-
 
 var id = ctx.getImageData(0, 0, 1, 1);
 
@@ -182,7 +184,7 @@ draw(false, 0, 0, 0);
 
 
 function init_draw(){
-	ctx.fillStyle = "#dbdbdb";
+	ctx.fillStyle = 1; // path
 		ctx.fillRect(0, 0, WIDTH, HEIGHT);
 }
 testX = 0;
@@ -236,11 +238,11 @@ function car_sensor(dir){
 			radian = (Math.PI/180) * (absoluteAngle + 45);
 			break;
 	}
-	var pathType = "#007070";
+	var pathType = 0;
 	newX = (playerPosX);
 	newY = (playerPosY);
-	if(array2D[newY][newX] == "#007070")
-		pathType = "#dbdbdb";
+	if(array2D[newY][newX] == 0)
+		pathType = 1;
 	
 	for(i = 0; i <= range; i++){
 	newX = Math.round((playerPosX) + (Math.sin(radian) * i));
@@ -260,7 +262,7 @@ function car_sensor(dir){
 	
 	if(array2D[newY][newX] == pathType || (newY <= 0 || newY >= HEIGHT-1 || newX <= 0 || newX >= WIDTH-1)){
 		
-		if (pathType == "#dbdbdb")
+		if (pathType == 1)
 			distance = range - Math.sqrt(Math.pow(newX - playerPosX, 2) + Math.pow(newY - playerPosY, 2));
 		else
 			distance = Math.sqrt(Math.pow(newX - playerPosX, 2) + Math.pow(newY - playerPosY, 2));
@@ -268,7 +270,7 @@ function car_sensor(dir){
 	}
 	
 	if(i == range)
-		if (pathType == "#dbdbdb")
+		if (pathType == 1)
 			distance = 0;
 		else
 			distance = 50;
@@ -278,69 +280,32 @@ function car_sensor(dir){
 	ret = {d: distance, x: newX, y: newY};
 	
 	return ret;
-	
-	
-	//console.log(newX+":"+newY+":"+radian);
-	
-	//array2D[newY][newX] = "#00ff00";
-	// grass "#007070"; 
-	// road "#dbdbdb";
-	
-	
-	/*
-	if(array2D[newY][newX] == "#dbdbdb"){
-		return true;
-	}else{
-		return false;
-	}*/
 }
 
 function draw(update, y, x, r){
 		var time = new Date().getTime();
-		//var curTime;
-		//draw
-		//sky
-		//ctx.fillStyle = "#dbdbdb";
-		//ctx.fillRect(0, 0, WIDTH, HEIGHT);
-		if(update == false){
-			id.data[3] = 255;
-			for(var i = 0 ; i < HEIGHT; i++){
-				for(var j = 0 ; j < WIDTH; j++){
-					//ctx.fillStyle = array2D[i][j];
-					if(array2D[i][j] == "#007070"){
-						id.data[0] = "0";
-						id.data[1] = "112";
-						id.data[2] = "112";
-					}else{
-						id.data[0] = "219";
-						id.data[1] = "219";
-						id.data[2] = "219";
-					}
-					//ctx.fillRect(j, i, 1, 1);
-					ctx.putImageData(id, j, i);
-				}
-			}
-		} else {
-			id.data[3] = 255;
-			for(var i = x-r ; i < x+r; i++){
-				for(var j = y-r ; j < y+r; j++){
-					//ctx.fillStyle = array2D[i][j];
-					if(i < HEIGHT && j < WIDTH && i >= 0 && j >= 0){
-						if(array2D[i][j] == "#007070"){
-							id.data[0] = "0";
-							id.data[1] = "112";
-							id.data[2] = "112";
-						}else{
-							id.data[0] = "219";
-							id.data[1] = "219";
-							id.data[2] = "219";
-						}
-						//ctx.fillRect(j, i, 1, 1);
-						ctx.putImageData(id, j, i);
-					}
+		
+		var pixelData = new Uint8ClampedArray(4 * WIDTH * HEIGHT);
+		var dataIndex = 0;
+		
+		for(var i = 0; i < HEIGHT; i++){
+			for(var j = 0; j < WIDTH; j++){
+						
+				if(array2D[i][j] == 0){
+					pixelData[dataIndex++] = 0;
+					pixelData[dataIndex++] = 112;
+					pixelData[dataIndex++] = 112;
+					pixelData[dataIndex++] = 255;
+				}else{
+					pixelData[dataIndex++] = 219;
+					pixelData[dataIndex++] = 219;
+					pixelData[dataIndex++] = 219;
+					pixelData[dataIndex++] = 255;
 				}
 			}
 		}
+		var imageData = new ImageData(pixelData, WIDTH, HEIGHT);
+		ctx.putImageData(imageData, 0, 0);
 		
 		draw_time.innerText = (new Date().getTime() - time) + " ms";
 }
@@ -360,7 +325,7 @@ function yourFunction(mouseX, mouseY) {
 		   if((i-mouseY)*(i-mouseY) + (j-mouseX)*(j-mouseX) <= r*r)
 		   {
 			   if(i < HEIGHT && j < WIDTH && i >= 0 && j >= 0)
-					array2D[i][j] = "#dbdbdb";
+					array2D[i][j] = 1;
 		   }
 	   }
 	}
