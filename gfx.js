@@ -41,41 +41,38 @@ function init_array2D(){
 			array2D[i][j] = 0;
 		}
 	}
-
 }
 
 function clear_array2D(){
 	for(var i = 0 ; i < HEIGHT; i++){
-		//array2D[i] = [];
 		for(var j = 0 ; j < WIDTH; j++){
 			array2D[i][j] = 0;
 		}
 	}
-
 }
 
-var id = ctx.getImageData(0, 0, 1, 1);
-
-playerPosX =80;
-playerPosY =80;
+playerPosX = 80;
+playerPosY = 80;
 playerAbsolutePosX = 80;
 playerAbsolutePosY = 80;
+
+playerSpeed = 1;
+playerMaxAngle = 60;
 
 var angle = 0;
 var absoluteAngle = 50;
 
-var wheel = 2;
-
-
+function UpdateCarSpecs() {
+	playerSpeed = document.getElementById("customSpeed").value;
+	playerMaxAngle = document.getElementById("customAngle").value;
+}
 
 var i = setInterval(function(){
 	
 	playerPosX = Math.round(playerAbsolutePosX);
 	playerPosY = Math.round(playerAbsolutePosY);
 	
-	draw(true, playerPosX, playerPosY, 51);//20*(4/3) //termp !! = 30
-
-	var sa = wheel;
+	DrawScene();
 	
 	angle = 0;
 	
@@ -83,24 +80,23 @@ var i = setInterval(function(){
 		if (ai == true)
 			steer("left", customAngle);
 		else
-			steer("left", -60);
+			steer("left", -playerMaxAngle);
 	}
 	if(right == true)
 		if (ai == true)
 			steer("right", customAngle);
 		else
-			steer("right", 60);
+			steer("right", playerMaxAngle);
 	if(up == true)
-		acc(1);
+		acc(playerSpeed);
 	if(down == true)
-		acc(-1);
+		acc(-playerSpeed);
 
 	var sensTempFront = car_sensor("front");
 	ctx.beginPath();
 	ctx.moveTo(playerPosX, playerPosY);
 	ctx.lineTo(sensTempFront.x, sensTempFront.y);
 	ctx.lineWidth = 2;
-	// set line color
 	ctx.strokeStyle = '#808000';
 	ctx.stroke();
 	
@@ -111,7 +107,6 @@ var i = setInterval(function(){
 	ctx.moveTo(playerPosX, playerPosY);
 	ctx.lineTo(sensTempLeft.x, sensTempLeft.y);
 	ctx.lineWidth = 2;
-	// set line color
 	ctx.strokeStyle = '#808000';
 	ctx.stroke();
 	sensLeftUi.innerText = "Sensor left: " + sensTempLeft.d;
@@ -121,7 +116,6 @@ var i = setInterval(function(){
 	ctx.moveTo(playerPosX, playerPosY);
 	ctx.lineTo(sensTempRight.x, sensTempRight.y);
 	ctx.lineWidth = 2;
-	// set line color
 	ctx.strokeStyle = '#808000';
 	ctx.stroke();
 	sensRightUi.innerText = "Sensor right: " + sensTempRight.d;
@@ -167,65 +161,46 @@ function acc(speed){
 	//console.log(playerPosY+":"+playerPosX);
 }
 
-function updateWheel(n){
-	wheel = n;
-}
-//30 / -30 
 function steer(dir, a){
-	//updateWheel(a);
 	if (dir == "right")
 		angle = a * Math.PI / 180;
 	else
 		angle = a * Math.PI / 180;
 }
 
-init_draw();
-draw(false, 0, 0, 0);
 
-
-function init_draw(){
-	ctx.fillStyle = 1; // path
-		ctx.fillRect(0, 0, WIDTH, HEIGHT);
-}
-testX = 0;
-textY = 0;
+DrawScene();
 
 function draw_car_sensor(){
-	//playerPosX =50;
-	//playerPosY =50;
-	//---front
+	// Front sensor
 	radian = (Math.PI/180) * (absoluteAngle);
 	range = 50;
 	newX = Math.round((playerPosX) + (Math.sin(radian) * range));
 	newY = Math.round((playerPosY) - (Math.cos(radian) * range));
-	
-	console.log(newX+":"+newY+":"+radian);
-	
+	//console.log(newX+":"+newY+":"+radian);
 	array2D[newY][newX] = "#00ff00";
-	//---left
+	
+	// Left sensor
 	radian = (Math.PI/180) * (absoluteAngle-45);
 	range = 30;
 	newX = Math.round((playerPosX) + (Math.sin(radian) * range));
 	newY = Math.round((playerPosY) - (Math.cos(radian) * range));
-	console.log(newX+":"+newY+":"+radian);	
+	//console.log(newX+":"+newY+":"+radian);	
 	array2D[newY][newX] = "#00ff00";
-	//right
+	
+	// Right sensor
 	radian = (Math.PI/180) * (absoluteAngle+45);
 	range = 30;
 	newX = Math.round((playerPosX) + (Math.sin(radian) * range));
 	newY = Math.round((playerPosY) - (Math.cos(radian) * range));
-	console.log(newX+":"+newY+":"+radian);	
+	//console.log(newX+":"+newY+":"+radian);	
 	array2D[newY][newX] = "#00ff00";
-	
-	//ctx.fillStyle = "#00ff00";
-	//ctx.fillRect(playerPosX, playerPosY, 1, 1);
 }
 
 function car_sensor(dir){
 	distance = 0;
 	range = 50;
 	radian = 0;
-	
 	
 	switch (dir) {
 		case "front":
@@ -239,50 +214,46 @@ function car_sensor(dir){
 			break;
 	}
 	var pathType = 0;
-	newX = (playerPosX);
-	newY = (playerPosY);
+	newX = playerPosX;
+	newY = playerPosY;
 	if(array2D[newY][newX] == 0)
 		pathType = 1;
 	
 	for(i = 0; i <= range; i++){
-	newX = Math.round((playerPosX) + (Math.sin(radian) * i));
-	newY = Math.round((playerPosY) - (Math.cos(radian) * i));
-	
-	if(newY < 0)
-		newY = 0;
-	
-	if(newY > HEIGHT-1)
-		newY = HEIGHT-1;
-	
-	if(newX < 0)
-		newX = 0;
-	
-	if(newX > WIDTH-1)
-		newX = WIDTH-1;
-	
-	if(array2D[newY][newX] == pathType || (newY <= 0 || newY >= HEIGHT-1 || newX <= 0 || newX >= WIDTH-1)){
+		newX = Math.round((playerPosX) + (Math.sin(radian) * i));
+		newY = Math.round((playerPosY) - (Math.cos(radian) * i));
 		
-		if (pathType == 1)
-			distance = range - Math.sqrt(Math.pow(newX - playerPosX, 2) + Math.pow(newY - playerPosY, 2));
-		else
-			distance = Math.sqrt(Math.pow(newX - playerPosX, 2) + Math.pow(newY - playerPosY, 2));
-		break;
+		if(newY < 0)
+			newY = 0;
+		
+		if(newY > HEIGHT-1)
+			newY = HEIGHT-1;
+		
+		if(newX < 0)
+			newX = 0;
+		
+		if(newX > WIDTH-1)
+			newX = WIDTH-1;
+		
+		if(array2D[newY][newX] == pathType || (newY <= 0 || newY >= HEIGHT-1 || newX <= 0 || newX >= WIDTH-1)){
+			
+			if (pathType == 1)
+				distance = range - Math.sqrt(Math.pow(newX - playerPosX, 2) + Math.pow(newY - playerPosY, 2));
+			else
+				distance = Math.sqrt(Math.pow(newX - playerPosX, 2) + Math.pow(newY - playerPosY, 2));
+			break;
+		}
+		
+		if(i == range)
+			distance = pathType == 1 ? 0 : 50;
 	}
-	
-	if(i == range)
-		if (pathType == 1)
-			distance = 0;
-		else
-			distance = 50;
-	}
-	
 	
 	ret = {d: distance, x: newX, y: newY};
 	
 	return ret;
 }
 
-function draw(update, y, x, r){
+function DrawScene(){
 		var time = new Date().getTime();
 		
 		var pixelData = new Uint8ClampedArray(4 * WIDTH * HEIGHT);
@@ -310,76 +281,31 @@ function draw(update, y, x, r){
 		draw_time.innerText = (new Date().getTime() - time) + " ms";
 }
 
+// Path drawing
+canvas.addEventListener('mousemove', DrawPath, false);
 
+function DrawPath(ev) {
+	const mouseX = ev.offsetX !== undefined ? ev.offsetX : ev.layerX;
+	const mouseY = ev.offsetY !== undefined ? ev.offsetY : ev.layerY;
+	const r = 20;
+	cords.innerText = "x: "+mouseX+" y: "+mouseY;
 
-function yourFunction(mouseX, mouseY) {
-  console.log("Inside!");
-  console.log(mouseY+":"+mouseX);
-  var r = 20;
-  for(var i = mouseY - r; i <= mouseY + r; i++)
-	{
-	   for(var j = mouseX - r; j <= mouseX + r; j++)
-	   {
-		   //console.log(i+":"+j);
-		   //array2D[i][j] = "#dbdbdb";
-		   if((i-mouseY)*(i-mouseY) + (j-mouseX)*(j-mouseX) <= r*r)
-		   {
-			   if(i < HEIGHT && j < WIDTH && i >= 0 && j >= 0)
-					array2D[i][j] = 1;
-		   }
-	   }
+	if(ev.buttons != 0){
+		for (let i = mouseY - r; i <= mouseY + r; i++) {
+			for (let j = mouseX - r; j <= mouseX + r; j++) {
+				if ((i - mouseY) ** 2 + (j - mouseX) ** 2 <= r ** 2) {
+					if (i < HEIGHT && j < WIDTH && i >= 0 && j >= 0) {
+						array2D[i][j] = 1;
+					}
+				}
+			}
+		}
+		DrawScene();
 	}
-	draw(true, mouseX, mouseY, r);
 }
-
-tool = new tool_pencil();
-
-canvas.addEventListener('mousedown', ev_canvas, false);
-canvas.addEventListener('mousemove', ev_canvas, false);
-canvas.addEventListener('mouseup',   ev_canvas, false);
-
-function tool_pencil () {
-    var tool = this;
-    this.started = false;
-
-    this.mousedown = function (ev) {
-        yourFunction(ev._x, ev._y);
-		
-        tool.started = true;
-    };
-
-    this.mousemove = function (ev) {
-		cords.innerText = "x: "+ev._x+" y: "+ev._y;
-      if (tool.started) {
-        yourFunction(ev._x, ev._y);
-      }
-    };
-
-    this.mouseup = function (ev) {
-      if (tool.started) {
-        tool.mousemove(ev);
-        tool.started = false;
-      }
-    };
-  }
-
-function ev_canvas (ev) {
-    if (ev.layerX || ev.layerX == 0) { // Firefox
-      ev._x = ev.layerX;
-      ev._y = ev.layerY;
-    } else if (ev.offsetX || ev.offsetX == 0) { // Opera
-      ev._x = ev.offsetX;
-      ev._y = ev.offsetY;
-    }
-
-    var func = tool[ev.type];
-    if (func) {
-      func(ev);
-    }
-  }
   
   
-//controlls
+// Controlls
 document.addEventListener('keydown', (e) => {
 	if (e.code === "ArrowLeft")
 		controlls("left",true);
@@ -423,46 +349,26 @@ function controlls(key, state, an){
 		case "left":
 			if(state == true){
 				customAngle = an;
-				left = true;
 			}
-			else {
-				//customAngle = 0;
-				left = false;
-			}
+			left = state;
 			break;
 		case "right":
 			if(state == true){
 				customAngle = an;
-				right = true;
 			}
-			else {
-				//customAngle = 0;
-				right = false;
-			}
+			right = state;
 			break;
 		case "up":
-			if(state == true)
-				up = true;
-			else
-				up = false;
+			up = state;
 			break;
 		case "down":
-			if(state == true)
-				down = true;
-			else
-				down = false;
+			down = state;
 			break;
 		case "space":
-			if(state == true)
-				space = true;
-			else
-				space = false;
+			space = state;
 			break;
 		case "ai":
-			if(state == true)
-				ai = true;
-			else
-				ai = false;
+			ai = state;
 			break;
 		
 	}

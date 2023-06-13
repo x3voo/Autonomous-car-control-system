@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>wrum</title>
+		<title>FuzzySteering</title>
 		<style>
 			#canvasScreen {
 				clear: both;
@@ -26,9 +26,9 @@
 		
 		<div class="block">
 			<b>Env</b>
-			<div id="cords">xd</div>
-			<div id="draw_time">xd</div>
-			<div id="key">xd</div>
+			<div id="cords">---</div>
+			<div id="draw_time">---</div>
+			<div id="key">---</div>
 		</div>
 		
 		<div class="block">
@@ -36,7 +36,7 @@
 			
 			<div id="wheelsUi">wheelsUi</div>
 			<div id="carAngleUi">carAngleUi</div>
-			<div id="speedUi">speedUi</div>
+			<div id="speedUi">---</div>
 			<div id="carXpos">carXpos</div>
 			<div id="carYpos">carYpos</div>
 			<div id="carXposAbs">carXposAbs</div>
@@ -50,17 +50,23 @@
 			<div id="sensRightUi">sensRightUi</div>
 		</div>
 		
+		<div class="block">
+			<b>Specs</b>
+			<div>Speed <input type="number" id="customSpeed" step="1" value="1"></input></div>
+			<div>Max angle <input type="number" id="customAngle" value="60" step="1"></input></div>
+			<button onclick="UpdateCarSpecs();" type="button">Update</button>
+		</div>
+		
 		<div class="clr">
-		<button onclick="draw(false, 0, 0, 0);" type="button">draw()</button>
-		<button onclick="clear_array2D();" type="button">clear_array2D()</button>
-		<button onclick="start_ai();" type="button">start_ai()</button>
-		<button onclick="stop_ai();" type="button">stop_ai()</button>
-		<button onclick="draw_car_sensor();" type="button">draw_car_sensor()</button>
-		<button onclick="preCompile();" type="button">PreCalculateFuzzyController</button>
+			<button onclick="draw(false, 0, 0, 0);" type="button">draw()</button>
+			<button onclick="clear_array2D();" type="button">clear_array2D()</button>
+			<button onclick="start_ai();" type="button">start_ai()</button>
+			<button onclick="stop_ai();" type="button">stop_ai()</button>
+			<button onclick="draw_car_sensor();" type="button">draw_car_sensor()</button>
+			<button onclick="preCompile();" type="button">PreCalculateFuzzyController</button>
 		</div>
 		
 		<script src="ai.js"></script>
 		<script src="gfx.js"></script>
-		
 	</body>
 </html>

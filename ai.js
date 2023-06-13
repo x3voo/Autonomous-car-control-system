@@ -92,7 +92,7 @@ for (i=0; i <= 100; i++){
 	
 }
 
-function monkaS(inp1, inp2, inp3) {
+function FuzzyController(inp1, inp2, inp3) {
 	for (i=0; i <= 100; i++){
 		YR[1][i] = 0;
 		YR[2][i] = 0;
@@ -253,7 +253,7 @@ function preCompile() {
 		for (jPre=0; jPre <= 50; jPre++){
 			preCompArray[iPre][jPre] = [];
 			for (kPre=0; kPre <= 50; kPre++){
-				preCompArray[iPre][jPre][kPre] = Math.round(monkaS(iPre,jPre,kPre));
+				preCompArray[iPre][jPre][kPre] = Math.round(FuzzyController(iPre,jPre,kPre));
 			}
 		}
 		console.clear();
@@ -271,7 +271,7 @@ function start_ai(){
 	
 	aiIntervalId = setInterval(function(){
 		
-		//angle = Math.round(monkaS(Math.round(car_sensor("left").d), Math.round(car_sensor("front").d), Math.round(car_sensor("right").d)));
+		//angle = Math.round(FuzzyController(Math.round(car_sensor("left").d), Math.round(car_sensor("front").d), Math.round(car_sensor("right").d)));
 		
 		angle = preCompArray[Math.round(car_sensor("left").d)][Math.round(car_sensor("front").d)][Math.round(car_sensor("right").d)];
 		
